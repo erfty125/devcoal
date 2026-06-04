@@ -31,7 +31,7 @@ int fired;
                 // turn to face target
                 if (t.linetarget)
                 {
-                        A_StartSound ("*fist", CHAN_WEAPON);
+                        A_StartSound ("weapons/grenlx", CHAN_WEAPON);
 //                      angle = t.angleFromSource;
                 }
         }
@@ -218,7 +218,7 @@ class KefirGrenade : Actor
                 Loop;
         Explode:
                 MISL A 1;
-                MISL B 8 Bright A_Explode(200,200);
+                MISL B 8 Bright {A_StartSound ("weapons/grenlx", CHAN_WEAPON); A_Explode(200,200);}
                 MISL C 6 Bright;
                 MISL D 4 Bright;
                 Stop;

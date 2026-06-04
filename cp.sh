@@ -1,2 +1,2 @@
-zip devcoal.pk3 *
+zip devcoal.pk3 * -r
 mv devcoal.pk3 /sdcard/Freedoom/uzdoom

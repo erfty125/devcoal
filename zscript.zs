@@ -61,9 +61,9 @@ int fired;
         Fire:
                 TNT1 A 0
 		{  if(invoker.fired<1){A_Punch(1000); invoker.fired=1;}}
-                PUNG B 1;
-                PUNG D 1 A_ReFire;
-                PUNG B 1;
+                PUNG A 1;
+                PUNG B 1 A_ReFire;
+                PUNG D 1;
                 Goto Ready;
         }
 }

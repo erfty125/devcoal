@@ -1,6 +1,6 @@
 version "4.11.0"
 
-
+#include "ftlib/zscript.zs"
 
 class Ahh : Weapon replaces Fist
 {
@@ -63,7 +63,7 @@ int fired;
 		{  if(invoker.fired<1){A_Punch(1000); invoker.fired=1;}}
                 PUNG A 1;
                 PUNG B 1 A_ReFire;
-                PUNG D 1;
+                PUNG C 1;
                 Goto Ready;
         }
 }

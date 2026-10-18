@@ -2,6 +2,21 @@ version "4.11.0"
 
 #include "ftlib/zscript.zs"
 
+class CumstomDookPlayer : DoomPlayer replaces DoomPlayer
+{
+    Default
+    {
+        Player.ViewHeight 25;
+        Player.StartItem "Ahh";
+        Player.StartItem "ModernFlamethrower";
+        Player.StartItem "Buttn";
+	Player.WeaponSlot 1, "Ahh";
+	Player.WeaponSlot 2, "ModernFlamethrower", "buttn";
+    }
+}
+
+
+
 class Ahh : Weapon replaces Fist
 {
 int fired;
@@ -53,17 +68,22 @@ int fired;
                 PUNG A 1 { A_WeaponReady(); invoker.fired=0;}
                 Loop;
         Deselect:
-                PUNG A 1 A_Lower;
+                PUNG A 0 A_Lower(40);
                 Loop;
         Select:
-                PUNG A 1 A_Raise;
+                PUNG A 0 A_Raise(40);
                 Loop;
         Fire:
-                TNT1 A 0
+                PUNG A 1
 		{  if(invoker.fired<1){A_Punch(1000); invoker.fired=1;}}
-                PUNG A 1;
+                PUNG A 0;
                 PUNG B 1 A_ReFire;
                 PUNG C 1;
+                PUNG D 0;
+		PUNG E 1;
+		PUNG F 0;
+		PUNG G 0;
+		PUNG H 1;
                 Goto Ready;
         }
 }
@@ -78,7 +98,7 @@ class AHHPistol : Pistol
                 Weapon.AmmoUse 0;
                 Weapon.AmmoGive 585;
                 Weapon.AmmoType "Clip";
-		Weapon.SlotNumber 8;
+		Weapon.SlotNumber 4;
         }
         States
         {
@@ -86,10 +106,10 @@ class AHHPistol : Pistol
                 PISG A 1 { A_WeaponReady(); invoker.fired=0;}
                 Loop;
         Deselect:
-                PISG A 0 A_Lower;
+                PISG A 0 A_Lower(40);
                 Loop;
         Select:
-                PISG A 0 A_Raise;
+                PISG A 0 A_Raise(40);
                 Loop;
         Fire:
                 TNT1 A 0 {  if(invoker.fired<1){A_FirePistol(); invoker.fired=1;}}
@@ -120,17 +140,17 @@ class Buttn : Pistol
                 Weapon.AmmoUse 0;
                 Weapon.AmmoGive 585;
                 Weapon.AmmoType "Clip";
-                Weapon.SlotNumber 9;
+                Weapon.SlotNumber 2;
         }
 
 	action bool IsKefir(Actor thing)
 	{
-		return (thing.GetClassName()=="KefirGrenade" && thing.InStateSequence(thing.curstate, thing.ResolveState("Spawn")));
+		return (thing.GetClassName()=="KefirGrenade" && (thing.InStateSequence(thing.curstate, thing.ResolveState("Spawn")) || thing.InStateSequence(thing.curstate, thing.ResolveState("Flyin")) ));
 	}
 
 	action void A_PushButtn()
         {
-                BlockThingsIterator itr = BlockThingsIterator.Create(self, 500);
+                BlockThingsIterator itr = BlockThingsIterator.Create(self, 5000);
                 while (itr.Next())
                 {
                         Actor victim = itr.thing;
@@ -159,28 +179,29 @@ class Buttn : Pistol
         States
         {
         Ready:
-                PISG A 1 { A_WeaponReady(); invoker.fired=0;}
+                PIST A 1 { A_WeaponReady(); invoker.fired=0;}
                 Loop;
         Deselect:
-                PISG A 0 A_Lower;
+                PIST A 0 A_Lower(40);
                 Loop;
         Select:
-                PISG A 0 A_Raise;
+                PIST A 0 A_Raise(40);
                 Loop;
-        Fire:
-                TNT1 A 0 {  if(invoker.fired<1){A_PushButtn(); invoker.fired=1;}}
-                PISG B 1;
-                PISG C 0 A_ReFire;
-                GoTo Ready;
         AltFire:
-		TNT1 A 0 {  if(invoker.fired<1){A_TrowKefir(); invoker.fired=1;}}
-                PISG B 1;
-                PISG C 0 A_ReFire;
+                TNT1 A 0 {  if(invoker.fired<1){A_PushButtn(); invoker.fired=1;}}
+                PIST E 1;
+                PIST F 1 A_ReFire;
+                GoTo Ready;
+        Fire:
+		PIST A 1 {  if(invoker.fired<1){invoker.fired=1;}}
+                PIST B 1 A_ReFire;
+                PIST C 1;
+		PIST D 1 A_TrowKefir();
                 GoTo Ready;
         Flash:
-                PISF A 1 Bright A_Light1;
+                PIST A 1 Bright A_Light1;
                 Goto LightDone;
-                PISF A 1 Bright A_Light1;
+                PIST A 1 Bright A_Light1;
                 Goto LightDone;
         Spawn:
                 PIST A -1;
@@ -196,15 +217,16 @@ class KefirGrenade : Actor
         {
                 Radius 3;
                 Height 3;
-                Speed 15;
+                Speed 25;
                 Damage 1;
-                //Projectile;
+		Scale 0.25;
+		//Projectile;
                 -NOGRAVITY
                 +RANDOMIZE
                 //+DEHEXPLOSION
                 //+GRENADETRAIL
                 BounceType "Doom";
-                Gravity 0.7;
+                Gravity 1;
                 SeeSound "weapons/grenlf";
                 DeathSound "weapons/grenlx";
                 BounceSound "weapons/grbnce";
@@ -213,12 +235,20 @@ class KefirGrenade : Actor
         }
         States
         {
-        Spawn:
-                SGRN A 1 Bright;
-                Loop;
+	Spawn:
+		MISL A 1 Applyfriction();
+		MISL A 1 A_JumpIf(HasHorVel(), "Flyin");
+		Loop;
+        Flyin:
+                MISL A 4;
+		MISL B 6;
+		MISL C 6 Applyfriction();
+		MISL D 6;
+                Goto Spawn;
+
         Explode:
                 MISL A 1;
-                MISL B 8 Bright {A_StartSound ("weapons/grenlx", CHAN_WEAPON); A_Explode(200,200);}
+                MISL B 8 Bright {A_StartSound ("weapons/grenlx", CHAN_WEAPON); A_Explode(1000,300,0);}
                 MISL C 6 Bright;
                 MISL D 4 Bright;
                 Stop;
@@ -240,5 +270,20 @@ class KefirGrenade : Actor
                 MISL B 8 A_Mushroom;
                 Goto Death+1;
         }
+
+
+
+void Applyfriction(){
+if((z-floorz)<=1.0){vel.x=0;vel.y=0;}
+		    }
+
+
+ bool HasHorVel()
+    {
+        Vector3 vel = vel;
+        return (abs(vel.x) > 3.0 || abs(vel.y) > 3.0);
+    }
+
+
 }
 

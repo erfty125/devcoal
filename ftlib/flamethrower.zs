@@ -12,8 +12,8 @@ class FlamethrowerProjectile : FastMissile
 		FastMissile.DOTType "BurnDOT";
 		
 		Scale 0.3;
-		FastMissile.XScaleFactor 0.09;
-		FastMissile.YScaleFactor 0.09;
+		FastMissile.XScaleFactor 0.15;
+		FastMissile.YScaleFactor 0.15;
 		
 		DamageFunction 10;
 		DamageType "Fire";
@@ -46,8 +46,8 @@ class FlamethrowerProjectile : FastMissile
 	override void CustomEffect()
 	{
 		//alpha -= min(0.02, alpha);
-		XScaleFactor+=0.05;
-		YScaleFactor+=0.05;
+		XScaleFactor+=0.10;
+		YScaleFactor+=0.10;
 	}
 }
 
@@ -207,9 +207,9 @@ class ModernFlamethrower : DoomWeapon replaces RocketLauncher
 {
 	Default
 	{
-		Weapon.SlotNumber 5;
+		Weapon.SlotNumber 2;
 		Weapon.SelectionOrder 2500;
-		Weapon.AmmoUse 1;
+		Weapon.AmmoUse 0;
 		Weapon.AmmoGive 50;
 		Weapon.AmmoType "Fuel";
 		Inventory.PickupMessage "Picked up a Flamethrower!";
@@ -223,11 +223,11 @@ class ModernFlamethrower : DoomWeapon replaces RocketLauncher
 			Loop;
 			
 		Deselect:
-			MISG A 1 A_Lower;
+			MISG A 1 A_Lower(40);
 			Loop;
 			
 		Select:
-			MISG A 1 A_Raise;
+			MISG A 1 A_Raise(40);
 			Loop;
 			
 		Fire:

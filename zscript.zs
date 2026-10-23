@@ -15,7 +15,21 @@ class CumstomDookPlayer : DoomPlayer replaces DoomPlayer
     }
 }
 
+class fed : Demon replaces Demon
+{
+    Default
+    {
+        Health 150;
+        Speed 12;
+    }
 
+    States
+    {
+    See:
+        SARG A 1 A_Chase;
+        Loop;
+    }
+}
 
 class Ahh : Weapon replaces Fist
 {

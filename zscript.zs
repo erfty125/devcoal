@@ -6,7 +6,7 @@ class CumstomDookPlayer : DoomPlayer replaces DoomPlayer
 {
     Default
     {
-        Player.ViewHeight 25;
+        Player.ViewHeight 34;
         Player.StartItem "Ahh";
         Player.StartItem "ModernFlamethrower";
         Player.StartItem "Buttn";
@@ -19,14 +19,19 @@ class fed : Demon replaces Demon
 {
     Default
     {
+	Scale 0.25;
         Health 150;
         Speed 12;
     }
 
     States
     {
+    Spawn:
+	SARG A 1 A_SetScale(0.40,0.25);
+	SARG A 1;
+	Loop;
     See:
-        SARG A 1 A_Chase;
+        SARG A 1;
         Loop;
     }
 }

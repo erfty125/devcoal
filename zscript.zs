@@ -19,20 +19,49 @@ class fed : Demon replaces Demon
 {
     Default
     {
-	Scale 0.25;
         Health 150;
-        Speed 12;
+        PainChance 180;
+        Speed 10;
+        Radius 20;
+	Scale 0.30;
+//        Height 56;
+        Mass 400;
+        Monster;
+        +FLOORCLIP
+        SeeSound "demon/sight";
+        AttackSound "demon/melee";
+        PainSound "demon/pain";
+        DeathSound "demon/death";
+        ActiveSound "demon/active";
+        Obituary "$OB_DEMONHIT";
+        Tag "$FN_DEMON";
     }
 
     States
     {
     Spawn:
-	SARG A 1 A_SetScale(0.40,0.25);
-	SARG A 1;
-	Loop;
-    See:
-        SARG A 1;
+//	SARG A 1 A_SetScale(0.4,0.25);
+        SARG AB 10 A_Look;
         Loop;
+    See:
+        SARG BCDEA 2 Fast A_Chase;
+        Loop;
+    Melee:
+        SARG AF 2 Fast A_FaceTarget;
+        SARG G 5 Fast;
+        SARG H 5 Fast A_SargAttack;
+        Goto See;
+    Pain:
+        SARG H 2 Fast;
+        SARG H 2 Fast A_Pain;
+        Goto See;
+    Death:
+        SARG A 1;
+        Stop;
+    Raise:
+        SARG A 5;
+        SARG BCDE 5;
+        Goto See;
     }
 }
 

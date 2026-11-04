@@ -12,7 +12,21 @@ class CumstomDookPlayer : DoomPlayer replaces DoomPlayer
         Player.StartItem "Buttn";
 	Player.WeaponSlot 1, "Ahh";
 	Player.WeaponSlot 2, "ModernFlamethrower", "buttn";
+	Player.ForwardMove 6.0, 6.0;
+	Player.SideMove 6.0 , 6.0;
+	Player.ViewBob 4;
+	Player.ViewBobSpeed 10.0;
+	Health 100;
+	Player.MaxHealth 100;
+	}
+	
+override void BeginPlay()
+    {
+        Super.BeginPlay();
+        self.Friction = 0.961; 
     }
+
+
 }
 
 class fed : Demon replaces Demon
@@ -28,6 +42,7 @@ class fed : Demon replaces Demon
         Mass 400;
         Monster;
         +FLOORCLIP
+	+ALWAYSRESPAWN
         SeeSound "demon/sight";
         AttackSound "demon/melee";
         PainSound "demon/pain";
@@ -44,19 +59,23 @@ class fed : Demon replaces Demon
         SARG AB 10 A_Look;
         Loop;
     See:
-        SARG BCDEA 2 Fast A_Chase;
+        SARG BCDEA 2 A_Chase;
         Loop;
     Melee:
         SARG AF 2 Fast A_FaceTarget;
-        SARG G 5 Fast;
+        SARG G 3 Fast;
         SARG H 5 Fast A_SargAttack;
         Goto See;
     Pain:
-        SARG H 2 Fast;
-        SARG H 2 Fast A_Pain;
+        SARG RSTU 2 Fast;
+        SARG V 2 Fast A_Pain;
         Goto See;
     Death:
-        SARG A 1;
+        SARG RS 1;
+        SARG TU 4;
+        SARG V 4;
+        SARG W 1 A_NoBlocking;
+        SARG W -1;
         Stop;
     Raise:
         SARG A 5;
@@ -123,7 +142,7 @@ int fired;
                 Loop;
         Fire:
                 PUNG A 1
-		{  if(invoker.fired<1){A_Punch(1000); invoker.fired=1;}}
+		{  if(invoker.fired<1){A_Punch(150); invoker.fired=1;}}
                 PUNG A 0;
                 PUNG B 1 A_ReFire;
                 PUNG C 1;

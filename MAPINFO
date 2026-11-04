@@ -1,6 +1,17 @@
 clearepisodes
+clearskills
+
+skill "ahh"
+{
+name = "ahh"
+DefaultSkill
+SpawnFilter = Normal
+RespawnTime = 10
+RespawnLimit = 5
+}
 
 episode ahhmap
 {
     name = "new game"
+    noskillmenu
 }
